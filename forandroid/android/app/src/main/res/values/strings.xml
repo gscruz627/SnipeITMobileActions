@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Snipe IT Mobile Actions for Android</string>
+    <string name="title_activity_main">Snipe IT Mobile Actions for Android</string>
+    <string name="package_name">com.gustavolacruz.snipeitmobileactions</string>
+    <string name="custom_url_scheme">com.gustavolacruz.snipeitmobileactions</string>
+</resources>

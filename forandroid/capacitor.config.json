@@ -1,0 +1,8 @@
+{
+  "appId": "com.gustavolacruz.snipeitmobileactions",
+  "appName": "Snipe IT Mobile Actions for Android",
+  "webDir": "www",
+  "android": {
+    "icon": "resources/icon.png"
+  }
+}

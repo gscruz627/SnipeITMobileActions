@@ -81,7 +81,7 @@ const Settings = () => {
                     <label htmlFor="archivedId">Archived ID:</label><br/>
                     <input onChange={(e) => setChangeArchivedId(e.target.value)} value={changeArchivedId} type="number" id="archivedId"></input><br/>
        
-                    <label htmlFor="checkoutId">Checked Out ID:</label><br/>
+                    <label htmlFor="checkoutId">Deployed ID:</label><br/>
                     <input onChange={(e) => setChangeCheckoutId(e.target.value)} value={changeCheckoutId} type="number" id="checkoutId"></input><br/>
 
                     <label htmlFor="delay">Delay (s):</label><br/>

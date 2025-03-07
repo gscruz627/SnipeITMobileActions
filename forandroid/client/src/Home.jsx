@@ -4,6 +4,10 @@ import './App.css'
 import { useSelector } from 'react-redux';
 import { BrowserMultiFormatReader } from '@zxing/library';
 import { Camera } from '@capacitor/camera';
+import cameraIcon from "./assets/camera.png"
+import settingsIcon from "./assets/settings.png"
+import scannerIcon from "./assets/scanner.png"
+import { CapacitorHttp } from '@capacitor/core';
 
 const Home = () => {
   const requestCameraPermission = async () => {
@@ -15,9 +19,7 @@ const Home = () => {
     }
   };
   
-  useEffect(() => {
-    requestCameraPermission();
-  }, []);
+
   const SNIPE_IT_API_KEY = useSelector((state) => state.snipeItKey);
   const SNIPE_IT_API_URL = useSelector((state) => state.snipeItUrl);
   const LEADING_ONE = useSelector((state) => state.leadingOne);
@@ -47,27 +49,23 @@ const Home = () => {
     }
     if(e){
       e.preventDefault();
-      if (LEADING_ONE){
-        setAssetTag(assetTag.substring(1))
-      }
-    } else {
-        if(LEADING_ONE){
-            data = data.substring(1);
-        }
     }
-    if (choice == "Move & Audit") {
+    if (LEADING_ONE){
+      stateRef.current.assetTag = stateRef.current.assetTag.substring(1);
+    }
+    if (stateRef.current.choice == "Move & Audit") {
       await moveAndAudit(data);
       return;
-    } else if (choice === "Move") {
+    } else if (stateRef.current.choice === "Move") {
       await move(data);
       return;
-    } else if (choice ==="Check In") {
+    } else if (stateRef.current.choice ==="Check In") {
       await checkIn(data);
       return;
-    } else if (choice === "Check Out"){
+    } else if (stateRef.current.choice === "Check Out"){
       await checkOut(data);
       return;
-    } else if (choice === "Deprecate") {
+    } else if (stateRef.current.choice === "Deprecate") {
       await deprecate(data);
       return;
     }  else {
@@ -89,30 +87,28 @@ const Home = () => {
 
   const fetchData = async (url, method = "GET", body = null) => {
     let request;
-    try {
-      request = await fetch(url, {
-        method,
+    try{
+      request = await CapacitorHttp.request({
+        method: method,
+        url: url,
         headers: {
           "Content-Type": "application/json",
-          accept: "application/json",
+          "accept": "application/json",
           "Authorization": `Bearer ${SNIPE_IT_API_KEY}`,
         },
-        body: body ? body : null,
-      });
-    } catch (error) {
-      setFailureMessage("Something Went Wrong with the Request. Try again.");
-        resetState();
+        data: body ? body : null
+      })
+    } catch(error) {
+      setFailureMessage("Something Went Wrong with the Request. Try again. Error: " + error);
+      resetState();
       return null;
     }
-  
-    if (!request.ok) {
+    if (request.status >= 400 && request.status <= 599){
       setFailureMessage(`Request Failed with code: ${request.status}. Try again.`);
       resetState();
       return null;
     }
-
-    const response = await request.json()
-  
+    const response = request.data;
     return response;
   };
 
@@ -179,7 +175,7 @@ const Home = () => {
     if(!checkExistance(locationResponse, location, "Location")){return}
 
     // Proceed with Check In Request
-    const checkinResponse = await fetchData(`${SNIPE_IT_API_URL}/api/v1/hardware/${assetId}/checkin`, "POST", JSON.stringify({"status_id": 1,"location_id": locationResponse.rows[0].id}))
+    const checkinResponse = await fetchData(`${SNIPE_IT_API_URL}/api/v1/hardware/${assetId}/checkin`, "POST", JSON.stringify({"status_id": CHECKOUT_ID,"location_id": locationResponse.rows[0].id}))
     if(!checkinResponse){return}
     setSuccessMessage(`Checked In Asset with name: ${response.name ? response.name : response.serial} to Location: ${locationResponse.rows[0].name}.`)
     resetState();
@@ -265,14 +261,20 @@ const Home = () => {
   }
 
   const [scanning, setScanning] = useState(false);
+  const codeReader = useRef(new BrowserMultiFormatReader()).current;
+
   const startCamera = async () => {
     try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment"} });
-       if (videoRef.current) {videoRef.current.srcObject = stream; setScanning(true)}
+      const constraints = { video: {facingMode: "environment" }};
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        setScanning(true);
+      }
     } catch (error) {
-        console.error("Error accessing camera:", error);
+      console.error("Error accessing camera:", error);
     }
-  }
+  };
 
   const stateRef = useRef({ choice, checkOutOption, checkoutField, locationField, assetTag: null });
 
@@ -282,46 +284,37 @@ const Home = () => {
   }, [choice, checkOutOption, checkoutField, locationField, assetTag]);
 
   // Camera Scanning workings.
-  useEffect(() => {
-    const codeReader = new BrowserMultiFormatReader();
-    const startScanning = async () => {
-      if (scanning) {
-        try {
-          const videoInputDevices = await codeReader.listVideoInputDevices();
-          const deviceId = videoInputDevices[2]?.deviceId || videoInputDevices[0]?.deviceId; // Fallback to first camera
-          if (deviceId) {
-            await codeReader.decodeFromVideoDevice(deviceId, videoRef.current, async (result, error) => {
-              if (result) {
-                const scannedCode = result.getText();
-                stateRef.current.assetTag = scannedCode;
-                codeReader.reset();
-                setScanning(false);
-
-                // Wait for 2 seconds before restarting
-                submit({data:null, e:null})
-                await sleep(DELAY * 1000);
-                setScanning(true);
-              }
-            });
+  const startScanning = async () => {
+    if (!scanning || !videoRef.current) return;
+  
+    try {
+        await codeReader.decodeFromVideoDevice(null, videoRef.current, async (result, error) => {
+          if (result) {
+            const scannedCode = result.getText();
+            stateRef.current.assetTag = scannedCode;
+            codeReader.reset();
+            setScanning(false);
+  
+            // Wait before restarting scanning
+            submit({ data: null, e: null });
+            await sleep(DELAY * 1000);
+            setScanning(true);
           }
-        } catch (err) {
-          console.error('Error starting scanner:', err);
-        }
-      }
-    };
-
-    if (scanning) {
-      startScanning();
+        });
+    } catch (err) {
+      console.error("Error starting scanner:", err);
     }
-
-    return () => {
-      codeReader.reset();
-    };
-  }, [scanning]);
-
-
+  };
+  
+  useEffect(() => {
+    requestCameraPermission();
+  }, []);
+  
   useEffect(() => {
     if (readingFromCamera) {
+      if (videoRef.current?.srcObject) {
+        videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+      }
       startCamera();
     } else {
       if (videoRef.current?.srcObject) {
@@ -329,7 +322,17 @@ const Home = () => {
       }
     }
   }, [readingFromCamera]);
-
+  
+  useEffect(() => {
+    if (scanning) {
+      startScanning();
+    }
+    return () => {
+      codeReader.reset();
+    };
+  }, [scanning]);
+  
+  
   return (
     <div>
       <header>
@@ -337,13 +340,13 @@ const Home = () => {
         <div style={{display: "flex", flexDirection: "row", columnGap: "15px"}}>
             <div onClick={() => setReadingFromCamera(!readingFromCamera)} className="choice-icon" style={{backgroundColor: readingFromCamera ? "#39CCCC" : "#FF851B" }}>
             {readingFromCamera ? 
-                <img src="/camera.png"></img>
+                <img src={cameraIcon}></img>
                 : 
-                <img src="/scanner.png"></img>
+                <img src={scannerIcon}></img>
             }
             </div>
             <div onClick={() => navigate("/settings")} className="choice-icon" style={{backgroundColor: "#888"}}>
-                <img src="/settings.png"></img>
+                <img src={settingsIcon}></img>
             </div>
         </div>
       </header>

@@ -14,13 +14,15 @@ const Settings = () => {
     const ARCHIVED_ID = useSelector((state) => state.archivedId);
     const CHECKED_OUT_ID = useSelector((state) => state.checkoutId);
     const DELAY = useSelector((state) => state.delay);
+    const NEXT_AUDIT = useSelector((state) => state.nextAudit);
 
     const [changeApiKey, setChangeApikey] = useState(SNIPE_IT_API_KEY);
     const [changeApiUrl, setChangeApiUrl] = useState(SNIPE_IT_API_URL);
     const [changeLeadingOne, setChangeLeadingOne] = useState(LEADING_ONE);
     const [changeArchivedId, setChangeArchivedId] = useState(ARCHIVED_ID);
     const [changeCheckoutId, setChangeCheckoutId] = useState(CHECKED_OUT_ID);
-    const [changeDelay, setChangeDelay] = useState(DELAY)
+    const [changeDelay, setChangeDelay] = useState(DELAY);
+    const [changeNextAudit, setChangeNextAudit] = useState(NEXT_AUDIT);
 
     const dispatch = useDispatch();
 
@@ -33,7 +35,8 @@ const Settings = () => {
                 leadingOne: changeLeadingOne,
                 archivedId: changeArchivedId,
                 checkoutId: changeCheckoutId,
-                delay: changeDelay
+                delay: changeDelay,
+                nextAudit: changeNextAudit
             }))
             setSuccessMessage("Settings saved successfully.");
             setTimeout(() => {
@@ -53,7 +56,8 @@ const Settings = () => {
         setChangeArchivedId(ARCHIVED_ID);
         setChangeCheckoutId(CHECKED_OUT_ID);
         setChangeDelay(DELAY);
-    }, [SNIPE_IT_API_KEY, SNIPE_IT_API_URL, LEADING_ONE, ARCHIVED_ID, CHECKED_OUT_ID, DELAY]);
+        setChangeNextAudit(NEXT_AUDIT);
+    }, [SNIPE_IT_API_KEY, SNIPE_IT_API_URL, LEADING_ONE, ARCHIVED_ID, CHECKED_OUT_ID, DELAY, NEXT_AUDIT]);
     return (
         <div>
             <header>
@@ -76,7 +80,7 @@ const Settings = () => {
 
 
                     <label htmlFor="apiKey">Snipet IT API Key: </label><br/>
-                    <textarea onChange={(e) => setChangeApikey(e.target.value)} value={changeApiKey} id="apiKey"></textarea><br/>
+                    <textarea onChange={(e) => setChangeApikey(e.target.value)} value={changeApiKey} id="apiKey" cols="60" rows="10"></textarea><br/>
 
                     <label htmlFor="archivedId">Archived ID:</label><br/>
                     <input onChange={(e) => setChangeArchivedId(e.target.value)} value={changeArchivedId} type="number" id="archivedId"></input><br/>
@@ -87,6 +91,9 @@ const Settings = () => {
                     <label htmlFor="delay">Delay (s):</label><br/>
                     <input onChange={(e) => setChangeDelay(e.target.value)} value={changeDelay} type="number" id="delay"></input><br/>
                     
+                    <label htmlFor="nextAudit">Next Audit Date (Yrs): </label><br/>
+                    <input onChange={(e) => setChangeNextAudit(e.target.value)} value={changeNextAudit} type="number" id="nextAudit"></input><br/>
+
                     <label htmlFor="leadingOne">Skip Leading One:</label><br/>
                     <input onChange={(e) => setChangeLeadingOne(!changeLeadingOne)}type="checkbox" checked={changeLeadingOne}></input>
 

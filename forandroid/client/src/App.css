@@ -189,6 +189,10 @@ input[type=text]:focus, input[type=number]:focus, textarea:focus{
   .box form > *{
     flex: 1 1 100%;
   }
+  .box form{
+    width:100%;
+    padding: 0 30px;
+  }
 }
 
 @media (max-width: 480px) {

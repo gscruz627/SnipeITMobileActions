@@ -3,6 +3,7 @@
   "appName": "Snipe IT Mobile Actions for Android",
   "webDir": "www",
   "android": {
-    "icon": "resources/icon.png"
+    "icon": "resources/icon.png",
+    "permissions": ["CAMERA"]
   }
 }

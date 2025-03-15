@@ -9,7 +9,8 @@ export const commonSlice = createSlice({
     archivedId: 3,
     checkoutId: 11,
     delay: 3,
-    leadingOne: false
+    leadingOne: false,
+    nextAudit: 1
   },
   reducers: {
     setConfiguration: (state, action) => {
@@ -19,6 +20,7 @@ export const commonSlice = createSlice({
         state.leadingOne = action.payload.leadingOne
         state.checkoutId = action.payload.checkoutId
         state.delay = action.payload.delay
+        state.nextAudit = action.payload.nextAudit
     }
   },
 });

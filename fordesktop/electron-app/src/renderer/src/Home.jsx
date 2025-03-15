@@ -14,6 +14,7 @@ const Home = () => {
   const ARCHIVED_ID = useSelector((state) => state.archivedId);
   const CHECKOUT_ID = useSelector((state) => state.checkoutId);
   const DELAY = useSelector((state) => state.delay);
+  const NEXT_AUDIT = useSelector((state) => state.nextAudit);
 
   const navigate = useNavigate();
   const videoRef = useRef(null);
@@ -68,7 +69,6 @@ const Home = () => {
         setResolvedCheckedOutLocation("");
         setFailureMessage("");
         setSuccessMessage("");
-        setCheckoutField("");
         setAssetTag("");
     }, DELAY * 1000);
 };
@@ -208,7 +208,8 @@ const Home = () => {
     if(!moveResponse){return;}
 
     // Proceed with the Audit Request
-    const auditResponse = await fetchData(`${SNIPE_IT_API_URL}/api/v1/hardware/audit`, "POST", JSON.stringify({"asset_tag": tag,"location_id": locationResponse.rows[0].id}))
+    const nextAuditDate = new Date(new Date().setFullYear(new Date().getFullYear() + Number.parseInt(NEXT_AUDIT))).toISOString().split('T')[0];
+    const auditResponse = await fetchData(`${SNIPE_IT_API_URL}/api/v1/hardware/audit`, "POST", JSON.stringify({"asset_tag": tag,"location_id": locationResponse.rows[0].id, "next_audit_date":nextAuditDate}))
     if(!auditResponse){return}
     setSuccessMessage(`Moved and Audited Asset with name: ${response.name ? response.name : response.serial} to Location: ${locationResponse.rows[0].name}.`)
     resetState();
@@ -416,7 +417,7 @@ const codeReader = useRef(new BrowserMultiFormatReader()).current;
                 stateRef.current.assetTag = assetTag;
                 submit({ e: e, data: null }); // Proceed with the submit
               }} style={{marginTop: "15px"}}>
-                <input onChange={(e) => setAssetTag(e.target.value)} value={assetTag} type="text" placeholder="Click Here to Scan"></input>
+                <input autoFocus onChange={(e) => setAssetTag(e.target.value)} value={assetTag} type="text" placeholder="Click Here to Scan"></input>
               </form>
           )
         ) : <h3>Wait...</h3>}

@@ -28,7 +28,7 @@
 body{
   background-color: #ecf0f5;
 }
-ul, li{
+nav ul, nav li{
   list-style: none;
 }
 a{
@@ -63,12 +63,12 @@ header{
 nav{
   min-height:50px;
 }
-ul{
+nav ul{
   display:flex;
   flex-direction: row;
   flex-wrap: wrap;
 }
-li{
+nav li{
   flex: 1;
   text-align: center;
   padding: 10px 0;
@@ -76,8 +76,30 @@ li{
   font-weight: bolder;
   cursor: pointer;
 }
-li:active{
+nav li:active{
   filter: brightness(70%);
+}
+
+#device-selection-list{
+  list-style: none;
+  width: 100%;
+  font-size:24px;
+  display:flex;
+  flex-direction: column;
+  background-color: #FFF;
+}
+#device-selection-list li{
+  border: 1px solid #d2d6de;
+  padding: 0.5rem 0.5rem;
+}
+#device-selection-list li:last-child{
+  border-top:none;
+}
+#device-selection-list li:hover{
+  background-color: #3c8dbc;
+  color:#FFF;
+  font-weight:bold;
+  cursor:pointer;
 }
 section{
   margin-top: 40px;
@@ -89,6 +111,18 @@ section{
 }
 section > div{
   margin: 20px 0;
+}
+#switch-camera-button{
+  width:100%;
+  background-color: cornflowerblue;
+  color: #FFF;
+  padding: 0.5rem 0;
+  font-size:24px;
+  border:none;
+  outline:none;
+}
+#switch-camera-button:hover{
+  filter: brightness(85%);
 }
 input[type=text], input[type=number], textarea{
   border: 1px solid #d2d6de;
@@ -221,9 +255,17 @@ input[type=text]:focus, input[type=number]:focus, textarea:focus{
   font-weight: bold;
   margin: 2rem auto;
 }
-
+#header-icon-group{
+  display: flex;
+  flex-direction: row;
+  column-gap: 15px;
+}
+small {
+  color: #777;
+  font-weight: normal;
+}
 @media (max-width: 768px) {
-  li {
+  nav li {
     flex: 0 0 33.33%; /* 3 items per row */
   }
   .center-box{
@@ -241,10 +283,17 @@ input[type=text]:focus, input[type=number]:focus, textarea:focus{
     display:flex;
     flex-direction:column;
   }
+  header{
+    flex-direction: column;
+    height:auto;
+  }
+  header > *{
+    padding: 0.25rem 0;
+  }
 }
 
 @media (max-width: 480px) {
-  li {
+  nav li {
     flex: 0 0 50%; /* 3 items per row */
   }
 }

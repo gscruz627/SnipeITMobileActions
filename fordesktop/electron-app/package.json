@@ -20,12 +20,9 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
-    "@reduxjs/toolkit": "^2.6.0",
     "@zxing/browser": "^0.1.5",
     "@zxing/library": "^0.21.3",
-    "react-redux": "^9.2.0",
-    "react-router-dom": "^7.2.0",
-    "redux-persist": "^6.0.0"
+    "react-router-dom": "^7.2.0"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config": "^2.0.0",
@@ -49,6 +46,17 @@
     "vite": "^6.1.0"
   },
   "build": {
-    "productName": "Snipe IT Mobile Actions for Desktop"
+    "appId": "com.gustavolacruz.snipeitaction",
+    "productName": "Snipe IT Actions",
+    "copyright": "Free For Use",
+    "win": {
+      "target": "nsis",
+      "icon": "build/scanner-icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
+    }
   }
 }

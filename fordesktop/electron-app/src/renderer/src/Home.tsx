@@ -404,9 +404,9 @@ function Home(){
     const checkoutResponse = await fetchData(`${snipeItApiUrl}/api/v1/hardware/${assetId}/checkout`, "POST", JSON.stringify({
         "status_id": checkOutId,
         "checkout_to_type": checkOutOption.toLowerCase(),
-        "assigned_user": (checkOutOption === "User") ? userResponse.rows[0].id : null,
-        "assigned_location" : (checkOutOption === "Location") ? locationResponse.rows[0].id : null,
-        "assigned_asset" : (checkOutOption === "Asset") ? assetResponse.id : null
+        "assigned_user": (checkOutOption === CheckOutChoice.User) ? userResponse.rows[0].id : null,
+        "assigned_location" : (checkOutOption === CheckOutChoice.Location) ? locationResponse.rows[0].id : null,
+        "assigned_asset" : (checkOutOption === CheckOutChoice.Asset) ? assetResponse.id : null
     }));
     if(!checkoutResponse){return}
     if(checkoutResponse.status === "error"){
@@ -711,7 +711,7 @@ useEffect(() => {
               style={{ marginTop: "15px" }}
             >
               <input
-                style={{ opacity: readMode === ReadingType.Keyboard ? 1 : 0 }}
+                style={{ opacity: (readMode === ReadingType.Keyboard && !activeTimeout) ? 1 : 0 }}
                 autoFocus
                 ref={assetTagRef}
                 type="text"

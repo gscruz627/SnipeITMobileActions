@@ -1,14 +1,34 @@
 /* Generals */
+@font-face{
+  font-family: 'Source Sans Pro';
+  src: url('./assets/SourceSansPro-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face{
+  font-family: 'Source Sans Pro';
+  src: url('./assets/SourceSansPro-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face{
+  font-family: 'Source Sans Pro';
+  src: url('./assets/SourceSansPro-Black.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+}
+
 *{
   box-sizing: border-box;
   padding:0;
   margin:0;
   font-family: 'Source Sans Pro'
 }
+
 body{
   background-color: #ecf0f5;
 }
-ul, li{
+nav ul, nav li{
   list-style: none;
 }
 a{
@@ -29,32 +49,26 @@ header{
 .choice-icon{
   height:50px;
   width:50px;
-  border-radius:8px;
-  border: 2px solid #FFF;
   display:flex;
   align-items: center;
   justify-content: center;
   cursor:pointer;
+  font-size: 24px;
 }
 .choice-icon:active{
   filter: brightness(70%);
-}
-
-.choice-icon img{
-  width: 80%;
-  height: 80%;
 }
 
 
 nav{
   min-height:50px;
 }
-ul{
+nav ul{
   display:flex;
   flex-direction: row;
   flex-wrap: wrap;
 }
-li{
+nav li{
   flex: 1;
   text-align: center;
   padding: 10px 0;
@@ -62,8 +76,30 @@ li{
   font-weight: bolder;
   cursor: pointer;
 }
-li:active{
+nav li:active{
   filter: brightness(70%);
+}
+
+#device-selection-list{
+  list-style: none;
+  width: 100%;
+  font-size:24px;
+  display:flex;
+  flex-direction: column;
+  background-color: #FFF;
+}
+#device-selection-list li{
+  border: 1px solid #d2d6de;
+  padding: 0.5rem 0.5rem;
+}
+#device-selection-list li:last-child{
+  border-top:none;
+}
+#device-selection-list li:hover{
+  background-color: #3c8dbc;
+  color:#FFF;
+  font-weight:bold;
+  cursor:pointer;
 }
 section{
   margin-top: 40px;
@@ -76,11 +112,24 @@ section{
 section > div{
   margin: 20px 0;
 }
+#switch-camera-button{
+  width:100%;
+  background-color: cornflowerblue;
+  color: #FFF;
+  padding: 0.5rem 0;
+  font-size:24px;
+  border:none;
+  outline:none;
+}
+#switch-camera-button:hover{
+  filter: brightness(85%);
+}
 input[type=text], input[type=number], textarea{
   border: 1px solid #d2d6de;
   color: #555;
   padding: 6px 12px;
-  outline:none
+  outline:none;
+  font-size:20px;
 }
 input[type=text]:focus, input[type=number]:focus, textarea:focus{
   border-color: #3C8DBC;
@@ -113,7 +162,7 @@ input[type=text]:focus, input[type=number]:focus, textarea:focus{
   border: 1px solid #ddd;
   color:#444;
   padding: 6px 12px;
-  font-size:14px;
+  font-size:20px;
 }
 
 #btn-group button:hover{
@@ -122,8 +171,9 @@ input[type=text]:focus, input[type=number]:focus, textarea:focus{
 }
 
 #btn-group button:active, #btn-group button.selected{
-  background-color: #d4d4d4;
-  border-color: #8c8c8c;
+  background-color: #3c8dbc;
+  color:white;
+
   box-shadow: rgba(0, 0, 0, 0.125) 0px;
 }
 
@@ -159,7 +209,7 @@ input[type=text]:focus, input[type=number]:focus, textarea:focus{
 .box{
   border-top: 3px solid #d2d6de;
   background-color: #FFF;
-  width: min(650px, 80%);
+  width: min(650px, 100%);
   display:flex;
   flex-direction: column;
   align-items: center;
@@ -182,9 +232,45 @@ input[type=text]:focus, input[type=number]:focus, textarea:focus{
   color:#333;
   font-weight: bolder;
 }
+
+.center-box{
+  width: 50%;
+  margin: 2rem auto;
+  padding: 5rem;
+  border: 2px dashed white;
+  border-radius: 10px;
+  cursor:pointer;
+}
+
+.center-box:hover{
+  filter: brightness(85%)
+}
+
+.center-box i{
+  font-size:72px;
+}
+
+.center-box p{
+  font-size:18px;
+  font-weight: bold;
+  margin: 2rem auto;
+}
+#header-icon-group{
+  display: flex;
+  flex-direction: row;
+  column-gap: 15px;
+}
+small {
+  color: #777;
+  font-weight: normal;
+}
 @media (max-width: 768px) {
-  li {
+  nav li {
     flex: 0 0 33.33%; /* 3 items per row */
+  }
+  .center-box{
+    padding: 2rem;
+    width:80%;
   }
   .box form > *{
     flex: 1 1 100%;
@@ -193,10 +279,22 @@ input[type=text]:focus, input[type=number]:focus, textarea:focus{
     width:100%;
     padding: 0 30px;
   }
+  #btn-group{
+    display:flex;
+    flex-direction:column;
+  }
+  header{
+    flex-direction: column;
+    height:auto;
+    padding-top:2rem;
+  }
+  header > *{
+    padding: 0.25rem 0;
+  }
 }
 
 @media (max-width: 480px) {
-  li {
+  nav li {
     flex: 0 0 50%; /* 3 items per row */
   }
 }

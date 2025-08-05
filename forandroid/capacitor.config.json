@@ -1,9 +1,16 @@
 {
   "appId": "com.gustavolacruz.snipeitmobileactions",
-  "appName": "Snipe IT Mobile Actions for Android",
+  "appName": "Snipe IT Actions",
   "webDir": "www",
   "android": {
-    "icon": "resources/icon.png",
-    "permissions": ["CAMERA"]
+    "icon": "resources/scanner-icon.ico",
+    "permissions": ["CAMERA", "INTERNET"]
+  },
+  "server": {
+    "cleartext": true,
+    "allowNavigation": [
+      "192.168.1.102",
+      "192.168.1.102:3001"
+    ]
   }
 }

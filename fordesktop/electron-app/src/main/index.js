@@ -6,6 +6,8 @@ app.commandLine.appendSwitch('ignore-certificate-errors');
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
+    title: "Snipe IT Actions",
+    icon: join(__dirname, "../build/scanner-icon.ico"),
     width: 900,
     height: 670,
     show: false,

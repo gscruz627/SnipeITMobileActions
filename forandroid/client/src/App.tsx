@@ -1,10 +1,8 @@
-import React from 'react';
-import { HashRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import "./App.css"
+import { HashRouter as Router, Routes, Route} from 'react-router-dom';
 import Home from './Home';
 import Settings from './Settings';
-
-const App = () => {
+import "./App.css"
+function App(){
   return (
     <Router>
       <Routes>

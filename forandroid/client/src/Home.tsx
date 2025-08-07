@@ -90,11 +90,7 @@ function Home(){
 
   // This function will asyncrhonously obtain Camera permissions from the user using the Capacitor Library.
   async function requestCameraPermission(){
-    try {
       const result = await Camera.requestPermissions();
-    } catch (error) {
-      console.error('Error requesting camera permission:', error);
-    }
   };
 
   // Request camera permissions as soon as the app loads.
@@ -624,10 +620,12 @@ App.addListener('appStateChange', async function({isActive} : {isActive:boolean}
       </nav>
       {(snipeItApiKey === "" || snipeItApiUrl === "" || archivedId === "" || checkOutId === "" || delay === 0 || auditWaitTime === 0) ?
       
-      <section className="center-box" style={{backgroundColor: "#FFDAE0", borderColor: "#BD6C6C"}}>
+      <Link to="settings">
+        <section className="center-box" style={{backgroundColor: "#FFDAE0", borderColor: "#BD6C6C"}}>
         <i className="fa-solid fa-triangle-exclamation"></i>
         <p>You have not configured all fields in the Settings, please go to the settings page (top right gear icon) and fill all fields.</p>
       </section>
+      </Link>
       :
       <section>
 

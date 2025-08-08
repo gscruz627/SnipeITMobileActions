@@ -50,7 +50,14 @@ function Home(){
   const [checkOutOption, setCheckOutOption] = useState<CheckOutChoice>(CheckOutChoice.User);
   
   // Controls the main reading choice: Move and Audit, Move, Archive, etc.
+  // We will add a ref to work alongside the state because it is the only way I got the 
+  // state to be synced when reading from camera, it may have to do with the fact that
+  // the scanner started scanning when a state was something else, unsure.
   const [choice, setChoice] = useState<ScanChoice>(ScanChoice.MoveAndAudit);
+  const choiceReference = useRef(choice);
+  useEffect(() => {
+    choiceReference.current = choice;
+  }, [choice]);
 
   // This controls the state of scaanning, idle, waiting and ready
   const [assetTagFocused, setAssetTagFocused] = useState<assetTagState>("idle");
@@ -140,14 +147,13 @@ function Home(){
     }
     
     // Run different functions depending on the choice.
-    switch (choice) {
+    switch (choiceReference.current) {
       case ScanChoice.MoveAndAudit: await moveAndAudit(); break;
       case ScanChoice.Move: await move(); break;
       case ScanChoice.CheckIn: await checkIn(); break;
       case ScanChoice.CheckOut: await checkOut(); break;
       case ScanChoice.Archive: await archive(); break;
       case ScanChoice.Location: await displayLocation(); break;
-      default: alert("failed"); 
     }
   }
 
@@ -247,16 +253,12 @@ function Home(){
     // This is both for checking the existance of an asset (computer or device), or some other
     // Asset or even a location, in which case Location: {Location} does not exist will
     // be displayed, so 'tag' is not very specific, is both for the location and the tag.
-    console.log(kind, tag, response);
     if(kind === "asset"){
-      console.log("asset");
         if (response.status === "error") {
-          console.log("error");
           setFailureMessage(`Asset with Tag: ${tag} does not exist.`);
           resetState();
           return false;
         }
-        console.log("this should not be running");
         return true;
     } else {
         if(response.total === 0){
@@ -416,11 +418,11 @@ function Home(){
     }
     let targetName = "Unknown";
 
-    if (checkOutOption === "User") {
+    if (checkOutOption === CheckOutChoice.User) {
       targetName = userResponse.rows[0].name;
-    } else if (checkOutOption === "Location") {
+    } else if (checkOutOption === CheckOutChoice.Location) {
       targetName = locationResponse.rows[0].name;
-    } else if (checkOutOption === "Asset") {
+    } else if (checkOutOption === CheckOutChoice.Asset) {
       targetName = assetResponse.name;
     }
 

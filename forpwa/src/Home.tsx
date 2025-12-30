@@ -1,8 +1,8 @@
-import { useEffect, useState, useRef, act, use } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import './App.css'
 import { BrowserMultiFormatReader} from '@zxing/browser';
-import type { Result, Exception } from '@zxing/library';
+import type { Result } from '@zxing/library';
 
 // Enums for Scan Choice, Checkout Choices and Reading Type.
 enum ScanChoice{
@@ -450,7 +450,6 @@ async function startBarcodeScanner(deviceId: string) {
     'video', // This is the HTML #id of the <video>
     async (
       result: Result | undefined,
-      error: Exception | undefined,
       controls: any
     ) => {
       if(!currentScanner){

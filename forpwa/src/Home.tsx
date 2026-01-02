@@ -462,7 +462,7 @@ async function startBarcodeScanner(deviceId: string) {
         hasScanned = true;
         setScanning(false);
         // actually stop scanning while maintaining the same scanner
-        controls.stop();
+        controls?.stop();
         currentScanner = null;
         assetTagRef.current!.value = result.getText();
         handleSubmit({})

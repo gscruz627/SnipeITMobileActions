@@ -3,7 +3,6 @@ import cors from "cors";
 
 const app = express();
 
-/* CORS FIRST */
 app.use(cors({
     origin: "*",
     allowedHeaders: [
@@ -17,36 +16,23 @@ app.use(cors({
 app.use(express.json());
 app.use(express.raw({ type: "*/*" }));
 
-/* Health check */
-app.get("/", (req, res) => {
-    res.status(200).send("Proxy alive");
-});
-
-/* PROXY + PREFLIGHT HANDLING */
 app.use(async (req, res) => {
 
-    /* ✅ Handle CORS preflight */
+    /* CORS preflight */
     if (req.method === "OPTIONS") {
         return res.sendStatus(204);
     }
 
-    const targetBase = req.headers["x-target-url"];
-
-    if (!targetBase) {
-        return res.status(400).json({
-            error: "Missing x-target-url header"
-        });
-    }
+    const targetUrl = req.headers["x-target-url"];
 
     try {
-        const targetUrl = `${targetBase}${req.originalUrl}`;
-
         const response = await fetch(targetUrl, {
             method: req.method,
             headers: {
                 ...req.headers,
                 host: undefined,
-                origin: undefined
+                origin: undefined,
+                "x-target-url": undefined
             },
             body: ["GET", "HEAD"].includes(req.method)
                 ? undefined
@@ -54,7 +40,6 @@ app.use(async (req, res) => {
         });
 
         res.status(response.status);
-
         response.headers.forEach((value, key) => {
             res.setHeader(key, value);
         });

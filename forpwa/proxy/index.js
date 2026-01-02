@@ -3,7 +3,9 @@ import express from "express";
 const app = express();
 
 app.use(express.json());
-
+app.get("/", (req, res) => {
+    res.status(200).send("Proxy is running");
+});
 app.use( async (req, res) => {
     try {
         const targetBase = req.headers["x-target-url"];

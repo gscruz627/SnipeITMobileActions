@@ -216,6 +216,7 @@ function Home(){
     const options: RequestInit = {
       method,
       headers: {
+        "x-target-url": url,
         "Content-Type": "application/json",
         "accept": "application/json",
         "Authorization": `Bearer ${snipeItApiKey}`,
@@ -228,7 +229,7 @@ function Home(){
     }
 
     try {
-      request = await fetch(url, options);
+      request = await fetch("https://snipeitmobileactions.onrender.com", options);
     } catch (error: any) {
       setFailureMessage(`Something Went Wrong with the Request. Error Code: ${error.message}`);
       resetState();

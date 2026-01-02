@@ -8,8 +8,10 @@ app.get("/", (req, res) => {
 });
 app.use( async (req, res) => {
     try {
-        const targetBase = req.headers["x-target-url"];
-        const targetUrl = `${targetBase}${req.originalUrl}`;
+        const targetUrl = req.headers["x-target-url"];
+        console.log(targetUrl);
+        console.log(req);
+        console.log(req.headers);
 
         const response = await fetch(targetUrl, {
             method: req.method,

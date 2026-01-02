@@ -101,6 +101,7 @@ function Home(){
     assetTag?: string | null;
   } = {}
   ){
+    console.log("started handle submit")
     // this function handles the main submit event, apply settings if needed first
 
     if(event){ event.preventDefault(); }
@@ -155,6 +156,8 @@ function Home(){
       case ScanChoice.Archive: await archive(); break;
       case ScanChoice.Location: await displayLocation(); break;
     }
+
+    console.log('ended handle submit');
   }
 
   async function handleKeyboardSubmit(event: React.FormEvent<HTMLFormElement>){
@@ -197,8 +200,10 @@ function Home(){
   function resetState(): void{
     // This function runs after each request and cleans all the states, activates the timeout
     // for {delay} specified seconds.
+    console.log("entered reset State, before timeout")
     setActiveTimeout(true);
     setTimeout(() => {
+      console.log("timeout entered");
         setActiveTimeout(false);
         setResolvedLocation("");
         setResolvedCheckedOutLocation("");
@@ -207,6 +212,7 @@ function Home(){
         hasScanned = false;
         if (readMode === ReadingType.Camera){ setScanning(true)}
         if (assetTagRef.current) { assetTagRef.current.value = ""; }
+        console.log("reset state finished");
     }, delay * 1000);
   };
 
@@ -436,37 +442,44 @@ function Home(){
     assetTagRef.current?.focus();
   }
 
+let counter = 0;
 async function startBarcodeScanner(deviceId: string) {
   // this function clears previous scanner objects, and starts decoding 
   // barcodes from a specific device (camera) using its {deviceId}
   if(!scanning){ return; }
+  console.log(currentScanner);
   if(currentScanner){
     currentScanner.stop();
     currentScanner = null;
   }
 
   hasScanned = false;
-  codeReader.decodeFromVideoDevice(
+  console.log('hello from here')
+  console.log()
+  await codeReader.decodeFromVideoDevice(
     deviceId,
     'video', // This is the HTML #id of the <video>
     async (
       result: Result | undefined,
       controls: any
     ) => {
-      if(!currentScanner){
+            if(!currentScanner){
         // If there not a scanner object yet, make it this one
         currentScanner = controls;
       }
-      if (result && !hasScanned) {
+      console.log("hasScanned " + hasScanned + " result: " + result + "scanning" + scanning);
+      console.log("counter: " + counter);
+      if (result && !hasScanned && counter == 0) {
+        counter++;
+        console.log("got a result");
         // Set up hasScanned to true (a workaround to force the scanner to stop
         // even if the camera is 24/7 pointed at some barcode, this caused issues)
         hasScanned = true;
+        console.log("changed has scanned to: " + hasScanned);
         setScanning(false);
-        // actually stop scanning while maintaining the same scanner
-        controls?.stop();
         currentScanner = null;
         assetTagRef.current!.value = result.getText();
-        handleSubmit({})
+        await handleSubmit({})
         resetState();
       }
     }

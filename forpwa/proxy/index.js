@@ -4,7 +4,7 @@ const app = express();
 
 app.use(express.json());
 
-app.all("/*", async (req, res) => {
+app.use( async (req, res) => {
     try {
         const targetBase = req.headers["x-target-url"];
         const targetUrl = `${targetBase}${req.originalUrl}`;

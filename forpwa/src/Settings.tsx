@@ -14,6 +14,7 @@ const Settings = () => {
     const delay: string = localStorage.getItem('delay') ?? '';
     const auditWaitTime: string = localStorage.getItem('audit-wait-time') ?? '';
     const trimWhitespace: string = localStorage.getItem('trim-whitespace') ?? '';
+    const proxy: string = localStorage.getItem('proxy') ?? '';
     const prefixes: Array<string> = localStorage.getItem('prefixes')?.split(" ") ?? [];
     const removedChars: Array<string> = localStorage.getItem('removed-chars')?.split(" ") ?? [];
     const casingSelection: string = localStorage.getItem('casing-selection') ?? '';
@@ -28,6 +29,7 @@ const Settings = () => {
     const auditWaitTimeRef = useRef<HTMLInputElement>(null);
     const trimWhitespaceRef = useRef<HTMLInputElement>(null);
     const prefixesRef = useRef<HTMLTextAreaElement>(null);
+    const proxyRef = useRef<HTMLInputElement>(null);
     const removedCharsRef = useRef<HTMLTextAreaElement>(null);
     const [changeCasingSelection, setCasingSelection] = useState<string>(casingSelection);
 
@@ -42,6 +44,7 @@ const Settings = () => {
         const checkout = checkoutIdRef.current?.value ?? '';
         const delayVal = delayRef.current?.value ?? '';
         const auditWait = auditWaitTimeRef.current?.value ?? '';
+        const proxyUrl = proxyRef.current?.value ?? '';
         const trimWhitespace = trimWhitespaceRef.current?.checked ?? false;
         const prefixes = prefixesRef.current?.value ?? '';
         const prefixesArray = prefixes.split("\n").map(s => s.trim()).filter(Boolean);
@@ -61,6 +64,7 @@ const Settings = () => {
         localStorage.setItem('prefixes', prefixesArray.join(" "));
         localStorage.setItem('removed-chars', removedCharsArray.join(" "));
         localStorage.setItem('casing-selection', casingSelection);
+        localStorage.setItem('proxy', proxyUrl);
         setSuccessMessage("Settings saved successfully.");
         setTimeout(() => { setSuccessMessage(""); }, 3000);
     }
@@ -131,6 +135,14 @@ const Settings = () => {
                     type="number"
                     id="nextAudit"
                     required
+                    /><br/>
+
+                    <label htmlFor="proxy">Proxy URL (If needed)</label><br/>
+                    <input
+                    ref={proxyRef}
+                    defaultValue={proxy}
+                    type="text"
+                    id="proxy"
                     /><br/>
 
                     <label htmlFor="leadingOne">Skip Leading Zeroes:</label><br/>

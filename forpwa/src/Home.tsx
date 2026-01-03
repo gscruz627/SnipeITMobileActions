@@ -37,6 +37,7 @@ function Home(){
   const archivedId: string = localStorage.getItem('archived-id') ?? '';
   const checkOutId: string = localStorage.getItem('check-out-id') ?? '';
   const delay: number = Number(localStorage.getItem('delay')) || 0;
+  const proxy: string = localStorage.getItem('proxy') ?? '';
   const auditWaitTime: number = Number(localStorage.getItem('audit-wait-time')) ?? 0;
   const trimWhitespace: string = localStorage.getItem('trim-whitespace') ?? '';
   const prefixes: Array<string> = localStorage.getItem('prefixes')?.split(" ") ?? [];
@@ -222,7 +223,7 @@ function Home(){
     const options: RequestInit = {
       method,
       headers: {
-        "x-target-url": url,
+        "x-target-url": (proxy != "") ? url : "",
         "Content-Type": "application/json",
         "accept": "application/json",
         "Authorization": `Bearer ${snipeItApiKey}`,
@@ -235,7 +236,7 @@ function Home(){
     }
 
     try {
-      request = await fetch("https://snipeitmobileactions.onrender.com", options);
+      request = await fetch((proxy != "") ? proxy : url, options);
     } catch (error: any) {
       setFailureMessage(`Something Went Wrong with the Request. Error Code: ${error.message}`);
       resetState();
